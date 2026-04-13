@@ -1,6 +1,21 @@
 import { create } from "zustand";
 
-export const useWorkspaceStore = create((set, get) => ({
+type Mode = "AUTO" | "MANUAL" | "HYBRID";
+type Style = "coastal" | "modern" | "luxury";
+
+type WorkspaceState = {
+  mode: Mode;
+  style: Style;
+  prompt: string;
+  response: string;
+
+  setMode: (mode: Mode) => void;
+  setStyle: (style: Style) => void;
+  setPrompt: (prompt: string) => void;
+  generateAI: () => void;
+};
+
+export const useWorkspaceStore = create<WorkspaceState>()((set, get) => ({
   mode: "HYBRID",
   style: "modern",
   prompt: "",
@@ -13,7 +28,10 @@ export const useWorkspaceStore = create((set, get) => ({
   generateAI: () => {
     const { prompt, style } = get();
     set({
-      response: `NWD AI (${style}): ${prompt}`
+      response: `AI (${style}) redesigning: "${prompt}".
+- Adjusted layout
+- Improved flow
+- Applied ${style} style`,
     });
-  }
+  },
 }));
