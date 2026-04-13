@@ -1,0 +1,94 @@
+workspaceStore.ts
+import { create } from "zustand";
+type Mode = "AUTO" | "MANUAL" | "HYBRID";
+type Style = "coastal" | "modern" | "luxury";
+type WorkspaceState = {
+mode: Mode;
+style: Style;
+prompt: string;
+response: string;
+setMode: (mode: Mode) => void;
+setStyle: (style: Style) => void;
+setPrompt: (prompt: string) => void;
+generateAI: () => void;
+};
+export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
+mode: "HYBRID",
+style: "modern",
+prompt: "",
+response: "",
+setMode: (mode) => set({ mode }),
+setStyle: (style) => set({ style }),
+setPrompt: (prompt) => set({ prompt }),
+generateAI: () => {
+const { prompt, style } = get();
+set({
+response: `AI (${style}) redesigning: "${prompt}".
+- Adjusted layout
+- Improved flow
+- Applied ${style} style`
+});
+},
+}));
+workspace/page.tsx
+'use client';
+import { useWorkspaceStore } from "@/store/workspaceStore";
+export default function Workspace() {
+const {
+mode,
+style,
+setMode,
+setStyle,
+prompt,
+setPrompt,
+generateAI,
+response,
+} = useWorkspaceStore();
+return (
+<div style={{ display: "flex", height: "100vh" }}>
+<div style={{ width: 250, padding: 20, background: "#111", color: "#fff" }}>
+<h3>Controls</h3>
+<label>Mode</label>
+<select value={mode} onChange={(e) => setMode(e.target.value as any)}>
+<option>AUTO</option>
+<option>MANUAL</option>
+<option>HYBRID</option>
+</select>
+<br /><br />
+<label>Style</label>
+<select value={style} onChange={(e) => setStyle(e.target.value as any)}>
+<option>modern</option>
+<option>coastal</option>
+<option>luxury</option>
+</select>
+</div>
+<div style={{ flex: 1, padding: 20, background: "#eee" }}>
+<h2>2D / 3D Canvas (Placeholder)</h2>
+</div>
+<div style={{ width: 300, padding: 20, background: "#222", color: "#fff" }}>
+<h3>AI Designer</h3>
+<textarea
+value={prompt}
+onChange={(e) => setPrompt(e.target.value)}
+style={{ width: "100%", height: 100 }}
+/>
+<button onClick={generateAI} style={{ marginTop: 10, width: "100%" }}>
+Generate
+</button>
+<p style={{ whiteSpace: "pre-wrap" }}>{response}</p>
+</div>
+</div>
+);
+}
+page.tsx
+import Link from "next/link";
+export default function Home() {
+return (
+<div style={{ padding: 40 }}>
+<h1>AI Interior Design App MVP</h1>
+<Link href="/workspace">
+<button>Enter Workspace</button>
+</Link>
+</div>
+);
+}
