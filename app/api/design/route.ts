@@ -1,10 +1,43 @@
 export async function POST(req) {
   const { prompt } = await req.json();
 
-  // Simulate slight delay (feels like real AI)
-  await new Promise((resolve) => setTimeout(resolve, 800));
+  await new Promise((r) => setTimeout(r, 600));
 
+  // AI DESIGN ENGINE OUTPUT (structured)
   return Response.json({
-    result: `✨ Mock AI Response:\n\nYou said: "${prompt}"\n\nHere’s a generated idea based on your input:\n- Clean modern layout\n- Smart automation flow\n- Responsive design optimized for users\n\n(Upgrade to real AI later)`
+    design: {
+      theme: "modern_ai_space",
+      canvas: {
+        width: 800,
+        height: 500
+      },
+      objects: [
+        {
+          id: "obj_1",
+          type: "wall",
+          x: 0,
+          y: 0,
+          width: 800,
+          height: 20
+        },
+        {
+          id: "obj_2",
+          type: "sofa",
+          x: 100,
+          y: 300,
+          width: 120,
+          height: 60
+        },
+        {
+          id: "obj_3",
+          type: "table",
+          x: 300,
+          y: 280,
+          width: 80,
+          height: 50
+        }
+      ],
+      prompt
+    }
   });
 }
