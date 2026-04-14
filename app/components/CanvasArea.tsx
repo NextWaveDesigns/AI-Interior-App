@@ -5,14 +5,9 @@ import { CanvasItem } from "./canvasBuilder";
 type Props = {
   items: CanvasItem[];
   updatePosition: (id: number, x: number, y: number) => void;
-  setSelectedId: (id: number) => void;
 };
 
-export default function CanvasArea({
-  items,
-  updatePosition,
-  setSelectedId
-}: Props) {
+export default function CanvasArea({ items, updatePosition }: Props) {
   const handleDrag = (e: any, id: number) => {
     updatePosition(id, e.clientX - 50, e.clientY - 50);
   };
@@ -22,15 +17,13 @@ export default function CanvasArea({
       style={{
         flex: 1,
         background: "#e2e8f0",
-        position: "relative",
-        height: "100%"
+        position: "relative"
       }}
     >
       {items.map((item) => (
         <div
           key={item.id}
           onMouseDown={(e) => handleDrag(e, item.id)}
-          onClick={() => setSelectedId(item.id)}
           style={{
             position: "absolute",
             left: item.x,
