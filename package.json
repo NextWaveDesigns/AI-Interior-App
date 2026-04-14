@@ -1,20 +1,28 @@
 {
-  "name": "nwd-design-app",
+  "name": "nextwave-ai-server",
   "version": "1.0.0",
-  "dependencies": {
-    "next": "14.2.3",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "zustand": "4.5.2"
-  },
-  "devDependencies": {
-    "typescript": "^5.0.0",
-    "@types/react": "^18.0.0",
-    "@types/node": "^20.0.0"
-  },
+  "description": "Backend server for NextWave AI Design Studio (2D builder + AI layout engine)",
+  "main": "server.js",
+  "type": "module",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "ai",
+    "design",
+    "interior",
+    "2d-builder",
+    "nextwave",
+    "express"
+  ],
+  "author": "NextWave Designs",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }
