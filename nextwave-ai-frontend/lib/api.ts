@@ -7,5 +7,9 @@ export async function generateLayout(prompt: string) {
     body: JSON.stringify({ prompt })
   });
 
+  if (!res.ok) {
+    throw new Error("Failed to generate layout");
+  }
+
   return res.json();
 }
