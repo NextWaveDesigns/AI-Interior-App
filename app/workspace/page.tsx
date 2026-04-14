@@ -1,46 +1,77 @@
 "use client";
 
-import { useState } from "react";
-import CanvasBuilder from "../components/CanvasBuilder";
+import TopBar from "@/components/TopBar";
+import LeftPanel from "@/components/LeftPanel";
+import RightPanel from "@/components/RightPanel";
+import CanvasArea from "@/components/CanvasArea";
 
-export default function Home() {
-  const [prompt, setPrompt] = useState("");
-  const [design, setDesign] = useState(null);
-  const [loading, setLoading] = useState(false);
-
-  const generateDesign = async () => {
-    setLoading(true);
-
-    const res = await fetch("http://localhost:5001/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt })
-    });
-
-    const data = await res.json();
-
-    setDesign(data.design);
-    setLoading(false);
-  };
-
+export default function WorkspacePage() {
   return (
-    <main style={{ padding: 20 }}>
-      <h1>NextWave AI 2D Builder</h1>
-
-      <textarea
-        value={prompt}
-        onChange={(e) => setPrompt(e.target.value)}
-        placeholder="Describe your space..."
-        style={{ width: "100%", height: 100 }}
-      />
-
-      <button onClick={generateDesign}>
-        {loading ? "Generating..." : "Generate AI Layout"}
-      </button>
-
-      <div style={{ marginTop: 20 }}>
-        <CanvasBuilder design={design} />
+    <div style={styles.container}>
+      {/* TOP BAR */}
+      <div style={styles.topBar}>
+        <TopBar />
       </div>
-    </main>
+
+      {/* MAIN WORKSPACE */}
+      <div style={styles.main}>
+        {/* LEFT PANEL */}
+        <div style={styles.left}>
+          <LeftPanel />
+        </div>
+
+        {/* CANVAS AREA (CENTER) */}
+        <div style={styles.canvas}>
+          <CanvasArea />
+        </div>
+
+        {/* RIGHT PANEL */}
+        <div style={styles.right}>
+          <RightPanel />
+        </div>
+      </div>
+    </div>
   );
 }
+
+const styles = {
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    height: "100vh",
+    width: "100vw",
+    overflow: "hidden",
+    fontFamily: "Arial, sans-serif"
+  },
+  topBar: {
+    height: "60px",
+    borderBottom: "1px solid #e5e7eb",
+    display: "flex",
+    alignItems: "center",
+    padding: "0 12px",
+    background: "#111827",
+    color: "white"
+  },
+  main: {
+    display: "flex",
+    flex: 1,
+    overflow: "hidden"
+  },
+  left: {
+    width: "240px",
+    borderRight: "1px solid #e5e7eb",
+    background: "#f3f4f6",
+    overflowY: "auto"
+  },
+  canvas: {
+    flex: 1,
+    background: "#f9fafb",
+    overflow: "hidden"
+  },
+  right: {
+    width: "280px",
+    borderLeft: "1px solid #e5e7eb",
+    background: "#f3f4f6",
+    overflowY: "auto"
+  }
+};
