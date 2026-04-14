@@ -1,44 +1,10 @@
-export async function POST(req: Request) {
-  const body = await req.json();
-  const { prompt } = body;
+export async function POST(req) {
+  const { prompt } = await req.json();
 
-  const apiKey = process.env.OPENAI_API_KEY;
-
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`
-    },
-    body: JSON.stringify({
-      model: "gpt-4o-mini",
-      messages: [
-        {
-          role: "system",
-          content: `
-You are an elite interior designer AI.
-
-Always return:
-- Layout suggestions
-- Furniture recommendations
-- Color palette
-- Lighting ideas
-- Space optimization tips
-
-Keep it clean and structured.
-`
-        },
-        {
-          role: "user",
-          content: prompt
-        }
-      ]
-    })
-  });
-
-  const data = await response.json();
+  // Simulate slight delay (feels like real AI)
+  await new Promise((resolve) => setTimeout(resolve, 800));
 
   return Response.json({
-    result: data.choices?.[0]?.message?.content || "No response"
+    result: `✨ Mock AI Response:\n\nYou said: "${prompt}"\n\nHere’s a generated idea based on your input:\n- Clean modern layout\n- Smart automation flow\n- Responsive design optimized for users\n\n(Upgrade to real AI later)`
   });
 }
