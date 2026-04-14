@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import CanvasBuilder from "../components/CanvasBuilder";
 
 export default function Home() {
   const [prompt, setPrompt] = useState("");
+  const [design, setDesign] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState(null);
 
   const generateDesign = async () => {
     setLoading(true);
@@ -17,38 +18,29 @@ export default function Home() {
     });
 
     const data = await res.json();
-    setResult(data);
+
+    setDesign(data.design);
     setLoading(false);
   };
 
   return (
-    <main style={{ padding: 40, fontFamily: "Arial" }}>
-      <h1>NextWave AI Design Engine</h1>
+    <main style={{ padding: 20 }}>
+      <h1>NextWave AI 2D Builder</h1>
 
       <textarea
         value={prompt}
         onChange={(e) => setPrompt(e.target.value)}
         placeholder="Describe your space..."
-        style={{ width: "100%", height: 120, marginTop: 20 }}
+        style={{ width: "100%", height: 100 }}
       />
 
-      <button onClick={generateDesign} style={{ marginTop: 10 }}>
-        {loading ? "Generating..." : "Generate Design"}
+      <button onClick={generateDesign}>
+        {loading ? "Generating..." : "Generate AI Layout"}
       </button>
 
-      {result && (
-        <div style={{ marginTop: 30 }}>
-          <h2>{result.design.title}</h2>
-          <p>{result.design.description}</p>
-
-          <h3>Elements:</h3>
-          <ul>
-            {result.design.elements.map((el, i) => (
-              <li key={i}>{el}</li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <div style={{ marginTop: 20 }}>
+        <CanvasBuilder design={design} />
+      </div>
     </main>
   );
 }
