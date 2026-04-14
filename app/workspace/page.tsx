@@ -1,138 +1,47 @@
 "use client";
 
 import { useState } from "react";
+import DesignEngine from "@/components/DesignEngine";
 
-export default function Workspace() {
-  const [input, setInput] = useState("");
-  const [output, setOutput] = useState("");
+export default function Home() {
+  const [prompt, setPrompt] = useState("");
+  const [design, setDesign] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [style, setStyle] = useState("modern");
-  const [room, setRoom] = useState("living room");
 
-  const handleGenerate = async () => {
-    if (!input) return;
-
+  async function generateDesign() {
     setLoading(true);
-    setOutput("");
 
-    try {
-      const res = await fetch("/api/design", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          prompt: `
-Design a ${room} in ${style} style.
+    const res = await fetch("/api/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt })
+    });
 
-User description:
-${input}
-          `
-        })
-      });
-
-      const data = await res.json();
-      setOutput(data.result);
-    } catch (err) {
-      setOutput("Error generating design. Try again.");
-    }
+    const data = await res.json();
+    setDesign(data.design);
 
     setLoading(false);
-  };
+  }
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "#0f172a",
-        color: "white",
-        padding: 20,
-        fontFamily: "sans-serif"
-      }}
-    >
-      {/* HEADER */}
-      <div style={{ marginBottom: 30 }}>
-        <h1 style={{ fontSize: 32 }}>NWD Design</h1>
-        <p style={{ opacity: 0.7 }}>NextWave AI Design Studio</p>
-      </div>
+    <div className="p-6 space-y-4">
 
-      {/* CONTROLS */}
-      <div
-        style={{
-          display: "flex",
-          gap: 10,
-          marginBottom: 15,
-          flexWrap: "wrap"
-        }}
-      >
-        <select
-          value={room}
-          onChange={(e) => setRoom(e.target.value)}
-          style={{ padding: 10 }}
-        >
-          <option>living room</option>
-          <option>bedroom</option>
-          <option>kitchen</option>
-          <option>office</option>
-        </select>
-
-        <select
-          value={style}
-          onChange={(e) => setStyle(e.target.value)}
-          style={{ padding: 10 }}
-        >
-          <option>modern</option>
-          <option>coastal</option>
-          <option>luxury</option>
-          <option>minimalist</option>
-        </select>
-      </div>
-
-      {/* INPUT */}
-      <textarea
-        placeholder="Describe your space (size, vibe, problems, goals...)"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        style={{
-          width: "100%",
-          height: 120,
-          padding: 12,
-          borderRadius: 6,
-          border: "none",
-          marginBottom: 15
-        }}
+      <input
+        className="border p-2 w-full"
+        value={prompt}
+        onChange={(e) => setPrompt(e.target.value)}
+        placeholder="Describe your design..."
       />
 
-      {/* BUTTON */}
       <button
-        onClick={handleGenerate}
-        style={{
-          padding: "12px 20px",
-          background: "#22c55e",
-          border: "none",
-          borderRadius: 6,
-          cursor: "pointer",
-          fontWeight: "bold"
-        }}
+        onClick={generateDesign}
+        className="bg-black text-white px-4 py-2 rounded"
       >
-        {loading ? "Designing..." : "Generate AI Design"}
+        {loading ? "Generating..." : "Generate Design"}
       </button>
 
-      {/* OUTPUT */}
-      {output && (
-        <div
-          style={{
-            marginTop: 30,
-            padding: 20,
-            background: "#1e293b",
-            borderRadius: 10,
-            lineHeight: 1.6
-          }}
-        >
-          <h3 style={{ marginBottom: 10 }}>AI Design Plan</h3>
-          <div style={{ whiteSpace: "pre-wrap" }}>{output}</div>
-        </div>
-      )}
+      <DesignEngine design={design} />
+
     </div>
   );
 }
