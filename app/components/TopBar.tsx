@@ -7,12 +7,10 @@ export default function TopBar() {
         color: "white",
         display: "flex",
         alignItems: "center",
-        padding: "0 20px",
-        justifyContent: "space-between"
+        padding: "0 20px"
       }}
     >
       <h2>NWD Design</h2>
-      <div>Workspace</div>
     </div>
   );
 }
