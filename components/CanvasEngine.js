@@ -1,49 +1,47 @@
-export default function CanvasArea({ design }) {
+"use client";
+
+import { useEffect, useRef } from "react";
+
+export default function CanvasEngine() {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = window.innerWidth;
+    canvas.height = 400;
+
+    let x = 50;
+    let speed = 2;
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // background
+      ctx.fillStyle = "#0f172a";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // moving object
+      ctx.fillStyle = "#38bdf8";
+      ctx.beginPath();
+      ctx.arc(x, 200, 20, 0, Math.PI * 2);
+      ctx.fill();
+
+      x += speed;
+
+      if (x > canvas.width || x < 0) speed *= -1;
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  }, []);
+
   return (
-    <div className="flex-1 bg-gray-100 relative overflow-hidden">
-
-      {/* GRID */}
-      <div
-        className="absolute inset-0 opacity-20"
-        style={{
-          backgroundImage:
-            "linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)",
-          backgroundSize: "40px 40px",
-        }}
-      />
-
-      {/* CANVAS */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="w-[900px] h-[600px] bg-white shadow-lg rounded-lg relative">
-
-          {!design && (
-            <div className="text-gray-400 text-sm flex items-center justify-center h-full">
-              No design yet — generate one
-            </div>
-          )}
-
-          {design?.objects?.map((obj) => (
-            <div
-              key={obj.id}
-              className="absolute"
-              style={{
-                left: obj.x,
-                top: obj.y,
-                width: obj.width,
-                height: obj.height,
-                backgroundColor:
-                  obj.type === "sofa"
-                    ? "#38bdf8"
-                    : obj.type === "table"
-                    ? "#fbbf24"
-                    : "#334155",
-              }}
-            />
-          ))}
-
-        </div>
-      </div>
-
-    </div>
+    <canvas
+      ref={canvasRef}
+      className="w-full rounded-lg shadow-lg"
+    />
   );
 }
