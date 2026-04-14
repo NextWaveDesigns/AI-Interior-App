@@ -74,3 +74,7 @@ export default function AIOutput({ text }: Props) {
     </div>
   );
 }
+<div style={{ marginTop: 40 }}>
+  <h3>Design Canvas</h3>
+  <CanvasBuilder />
+</div>
