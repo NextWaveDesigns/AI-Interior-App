@@ -1,51 +1,54 @@
 "use client";
 
 import { useState } from "react";
-import TopBar from "@/components/TopBar";
-import LeftPanel from "@/components/LeftPanel";
-import RightPanel from "@/components/RightPanel";
-import CanvasArea from "@/components/CanvasArea";
 
-export default function Workspace() {
+export default function Home() {
   const [prompt, setPrompt] = useState("");
-  const [design, setDesign] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
 
-  async function generateDesign() {
+  const generateDesign = async () => {
     setLoading(true);
 
-    const res = await fetch("/api/generate", {
+    const res = await fetch("http://localhost:5001/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt }),
+      body: JSON.stringify({ prompt })
     });
 
     const data = await res.json();
-
-    setDesign(data.design);
+    setResult(data);
     setLoading(false);
-  }
+  };
 
   return (
-    <div className="h-screen flex flex-col">
+    <main style={{ padding: 40, fontFamily: "Arial" }}>
+      <h1>NextWave AI Design Engine</h1>
 
-      <TopBar />
+      <textarea
+        value={prompt}
+        onChange={(e) => setPrompt(e.target.value)}
+        placeholder="Describe your space..."
+        style={{ width: "100%", height: 120, marginTop: 20 }}
+      />
 
-      <div className="flex flex-1 overflow-hidden">
+      <button onClick={generateDesign} style={{ marginTop: 10 }}>
+        {loading ? "Generating..." : "Generate Design"}
+      </button>
 
-        <LeftPanel
-          prompt={prompt}
-          setPrompt={setPrompt}
-          onGenerate={generateDesign}
-          loading={loading}
-        />
+      {result && (
+        <div style={{ marginTop: 30 }}>
+          <h2>{result.design.title}</h2>
+          <p>{result.design.description}</p>
 
-        <CanvasArea design={design} />
-
-        <RightPanel design={design} />
-
-      </div>
-
-    </div>
+          <h3>Elements:</h3>
+          <ul>
+            {result.design.elements.map((el, i) => (
+              <li key={i}>{el}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </main>
   );
 }
