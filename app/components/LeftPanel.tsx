@@ -12,11 +12,11 @@ export default function LeftPanel({ addItem }: Props) {
         padding: 10
       }}
     >
-      <h3>Tools</h3>
+      <h3>Furniture</h3>
 
-      <button onClick={() => addItem("sofa")}>Add Sofa</button>
-      <button onClick={() => addItem("table")}>Add Table</button>
-      <button onClick={() => addItem("bed")}>Add Bed</button>
+      <button onClick={() => addItem("sofa")}>Sofa</button>
+      <button onClick={() => addItem("table")}>Table</button>
+      <button onClick={() => addItem("bed")}>Bed</button>
     </div>
   );
 }
