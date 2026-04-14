@@ -1,76 +1,125 @@
 "use client";
 
 import { useState } from "react";
+import { generateLayout } from "@/lib/api";
 
-import TopBar from "../components/TopBar";
-import LeftPanel from "../components/LeftPanel";
-import RightPanel from "../components/RightPanel";
-import CanvasArea from "../components/CanvasArea";
+type Item = {
+  id: number;
+  type: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
 
-import { useCanvasBuilder } from "../components/canvasBuilder";
-
-export default function Workspace() {
-  const [input, setInput] = useState("");
-  const [output, setOutput] = useState("");
+export default function WorkspacePage() {
+  const [prompt, setPrompt] = useState("");
+  const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const { items, addItem, updatePosition } = useCanvasBuilder();
-
   const handleGenerate = async () => {
-    if (!input) return;
-
-    setLoading(true);
-    setOutput("");
-
     try {
-      const res = await fetch("/api/design", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ prompt: input })
-      });
-
-      const data = await res.json();
-
-      const parsed = JSON.parse(data.result);
-
-      setOutput(JSON.stringify(parsed.plan, null, 2));
-
-      parsed.items.forEach((item: any) => {
-        addItem(item.type, item.x, item.y);
-      });
-
+      setLoading(true);
+      const data = await generateLayout(prompt);
+      setItems(data.layout);
     } catch (err) {
-      setOutput("Error parsing AI response.");
+      console.error(err);
+      alert("Failed to generate layout");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
-    <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
+    <div style={styles.container}>
       
-      <TopBar />
-
-      <div style={{ display: "flex", flex: 1 }}>
-        
-        <LeftPanel addItem={addItem} />
-
-        <CanvasArea
-          items={items}
-          updatePosition={updatePosition}
-        />
-
-        <RightPanel
-          input={input}
-          setInput={setInput}
-          generate={handleGenerate}
-          output={output}
-          loading={loading}
-        />
-
+      {/* TOP BAR */}
+      <div style={styles.topbar}>
+        <div>NextWave AI</div>
+        <div>Workspace</div>
       </div>
+
+      {/* INPUT */}
+      <div style={styles.controls}>
+        <input
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+          placeholder="Describe your room (e.g. modern office)"
+          style={styles.input}
+        />
+        <button onClick={handleGenerate} style={styles.button}>
+          {loading ? "Generating..." : "Generate"}
+        </button>
+      </div>
+
+      {/* CANVAS */}
+      <div style={styles.canvas}>
+        {items.map((item) => (
+          <div
+            key={item.id}
+            style={{
+              position: "absolute",
+              left: item.x,
+              top: item.y,
+              width: item.width,
+              height: item.height,
+              background: "#0ea5e9",
+              color: "white",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: 6,
+              fontSize: 12
+            }}
+          >
+            {item.type}
+          </div>
+        ))}
+      </div>
+
     </div>
   );
 }
+
+const styles = {
+  container: {
+    width: "100%",
+    height: "100vh",
+    display: "flex",
+    flexDirection: "column"
+  },
+  topbar: {
+    height: "60px",
+    background: "#111827",
+    color: "white",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: "0 16px"
+  },
+  controls: {
+    padding: 16,
+    display: "flex",
+    gap: 10,
+    borderBottom: "1px solid #e5e7eb"
+  },
+  input: {
+    padding: 10,
+    width: 300,
+    border: "1px solid #ccc",
+    borderRadius: 6
+  },
+  button: {
+    padding: "10px 16px",
+    background: "#0ea5e9",
+    color: "white",
+    border: "none",
+    borderRadius: 6,
+    cursor: "pointer"
+  },
+  canvas: {
+    flex: 1,
+    position: "relative",
+    background: "#f8fafc"
+  }
+};
