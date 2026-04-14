@@ -3,6 +3,11 @@
 import { useState } from "react";
 import AIOutput from "../components/AIOutput";
 import CanvasBuilder from "./canvas";
+import TopBar from "../components/TopBar";
+import LeftPanel from "../components/LeftPanel";
+import RightPanel from "../components/RightPanel";
+import CanvasArea from "../components/CanvasArea";
+import { useCanvasBuilder } from "../components/canvasBuilder";
 
 export default function Workspace() {
   const [input, setInput] = useState("");
