@@ -34,9 +34,9 @@ export default function RightPanel({
         {loading ? "Designing..." : "Generate"}
       </button>
 
-      <div style={{ marginTop: 20, whiteSpace: "pre-wrap" }}>
+      <pre style={{ marginTop: 20, whiteSpace: "pre-wrap" }}>
         {output}
-      </div>
+      </pre>
     </div>
   );
 }
