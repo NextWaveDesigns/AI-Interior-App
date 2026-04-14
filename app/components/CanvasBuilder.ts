@@ -9,16 +9,15 @@ export type CanvasItem = {
 
 export function useCanvasBuilder() {
   const [items, setItems] = useState<CanvasItem[]>([]);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
 
-  const addItem = (type: string) => {
+  const addItem = (type: string, x = 100, y = 100) => {
     setItems((prev) => [
       ...prev,
       {
-        id: Date.now(),
+        id: Date.now() + Math.random(),
         type,
-        x: 100,
-        y: 100
+        x,
+        y
       }
     ]);
   };
@@ -34,8 +33,6 @@ export function useCanvasBuilder() {
   return {
     items,
     addItem,
-    updatePosition,
-    selectedId,
-    setSelectedId
+    updatePosition
   };
 }
