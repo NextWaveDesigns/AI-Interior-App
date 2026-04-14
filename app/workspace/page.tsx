@@ -1,9 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import DesignEngine from "@/components/DesignEngine";
+import TopBar from "@/components/TopBar";
+import LeftPanel from "@/components/LeftPanel";
+import RightPanel from "@/components/RightPanel";
+import CanvasArea from "@/components/CanvasArea";
 
-export default function Home() {
+export default function Workspace() {
   const [prompt, setPrompt] = useState("");
   const [design, setDesign] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -14,33 +17,34 @@ export default function Home() {
     const res = await fetch("/api/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt })
+      body: JSON.stringify({ prompt }),
     });
 
     const data = await res.json();
-    setDesign(data.design);
 
+    setDesign(data.design);
     setLoading(false);
   }
 
   return (
-    <div className="p-6 space-y-4">
+    <div className="h-screen flex flex-col">
 
-      <input
-        className="border p-2 w-full"
-        value={prompt}
-        onChange={(e) => setPrompt(e.target.value)}
-        placeholder="Describe your design..."
-      />
+      <TopBar />
 
-      <button
-        onClick={generateDesign}
-        className="bg-black text-white px-4 py-2 rounded"
-      >
-        {loading ? "Generating..." : "Generate Design"}
-      </button>
+      <div className="flex flex-1 overflow-hidden">
 
-      <DesignEngine design={design} />
+        <LeftPanel
+          prompt={prompt}
+          setPrompt={setPrompt}
+          onGenerate={generateDesign}
+          loading={loading}
+        />
+
+        <CanvasArea design={design} />
+
+        <RightPanel design={design} />
+
+      </div>
 
     </div>
   );
