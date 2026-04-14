@@ -7,71 +7,75 @@ import CanvasArea from "@/components/CanvasArea";
 
 export default function WorkspacePage() {
   return (
-    <div style={styles.container}>
+    <div className="workspace">
       {/* TOP BAR */}
-      <div style={styles.topBar}>
+      <div className="topbar">
         <TopBar />
       </div>
 
-      {/* MAIN WORKSPACE */}
-      <div style={styles.main}>
+      {/* MAIN LAYOUT */}
+      <div className="main">
         {/* LEFT PANEL */}
-        <div style={styles.left}>
+        <aside className="left">
           <LeftPanel />
-        </div>
+        </aside>
 
-        {/* CANVAS AREA (CENTER) */}
-        <div style={styles.canvas}>
+        {/* CANVAS */}
+        <section className="canvas">
           <CanvasArea />
-        </div>
+        </section>
 
         {/* RIGHT PANEL */}
-        <div style={styles.right}>
+        <aside className="right">
           <RightPanel />
-        </div>
+        </aside>
       </div>
+
+      <style jsx>{`
+        .workspace {
+          height: 100vh;
+          width: 100vw;
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+          background: #0b0f19;
+        }
+
+        .topbar {
+          height: 60px;
+          flex-shrink: 0;
+          border-bottom: 1px solid #1f2937;
+          background: #111827;
+          display: flex;
+          align-items: center;
+        }
+
+        .main {
+          display: flex;
+          flex: 1;
+          overflow: hidden;
+        }
+
+        .left {
+          width: 260px;
+          background: #111827;
+          border-right: 1px solid #1f2937;
+          overflow-y: auto;
+        }
+
+        .canvas {
+          flex: 1;
+          background: #0b0f19;
+          overflow: hidden;
+        }
+
+        .right {
+          width: 300px;
+          background: #111827;
+          border-left: 1px solid #1f2937;
+          overflow-y: auto;
+        }
+      `}</style>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    height: "100vh",
-    width: "100vw",
-    overflow: "hidden",
-    fontFamily: "Arial, sans-serif"
-  },
-  topBar: {
-    height: "60px",
-    borderBottom: "1px solid #e5e7eb",
-    display: "flex",
-    alignItems: "center",
-    padding: "0 12px",
-    background: "#111827",
-    color: "white"
-  },
-  main: {
-    display: "flex",
-    flex: 1,
-    overflow: "hidden"
-  },
-  left: {
-    width: "240px",
-    borderRight: "1px solid #e5e7eb",
-    background: "#f3f4f6",
-    overflowY: "auto"
-  },
-  canvas: {
-    flex: 1,
-    background: "#f9fafb",
-    overflow: "hidden"
-  },
-  right: {
-    width: "280px",
-    borderLeft: "1px solid #e5e7eb",
-    background: "#f3f4f6",
-    overflowY: "auto"
-  }
-};
