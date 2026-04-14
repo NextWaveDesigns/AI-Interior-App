@@ -1,24 +1,32 @@
-export default function RightPanel() {
+export default function RightPanel({ design }) {
   return (
     <div className="w-80 border-l p-3 space-y-4">
 
       <div>
         <h3 className="text-xs font-semibold mb-2">AI Insight</h3>
+
         <div className="text-sm text-gray-600 border p-2 rounded">
-          No design generated yet.
+          {design
+            ? `Generated a ${design.theme} layout with ${design.objects.length} objects.`
+            : "No design generated yet."}
         </div>
       </div>
 
       <div>
-        <h3 className="text-xs font-semibold mb-2">Selected Object</h3>
+        <h3 className="text-xs font-semibold mb-2">Design Stats</h3>
+
         <div className="border p-2 rounded text-sm">
-          None selected
+          {design ? (
+            <>
+              Objects: {design.objects.length}
+              <br />
+              Canvas: {design.canvas.width} x {design.canvas.height}
+            </>
+          ) : (
+            "—"
+          )}
         </div>
       </div>
-
-      <button className="w-full bg-black text-white py-2 rounded">
-        Improve Design
-      </button>
 
     </div>
   );
