@@ -33,34 +33,26 @@ export default function Workspace() {
 
       const data = await res.json();
 
-      console.log("RAW AI RESPONSE:", data.result);
-
       let parsed;
 
       try {
         parsed = JSON.parse(data.result);
-      } catch (err) {
-        setOutput("❌ AI did not return valid JSON.\n\n" + data.result);
+      } catch {
+        setOutput("Invalid AI response:\n" + data.result);
         setLoading(false);
         return;
       }
 
-      // Show readable plan
       setOutput(JSON.stringify(parsed.plan, null, 2));
 
-      // Clear old items first (optional reset behavior)
-      // NOTE: comment this out if you want stacking designs
-      // items.length = 0;
-
-      // Add AI items to canvas
-      if (parsed.items && Array.isArray(parsed.items)) {
+      if (parsed.items) {
         parsed.items.forEach((item: any) => {
           addItem(item.type, item.x, item.y);
         });
       }
 
     } catch (err: any) {
-      setOutput("❌ Server error: " + err.message);
+      setOutput("Error: " + err.message);
     }
 
     setLoading(false);
