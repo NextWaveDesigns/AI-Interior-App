@@ -6,7 +6,18 @@ export async function POST(req: Request) {
     const apiKey = process.env.OPENAI_API_KEY;
 
     if (!apiKey) {
-      return Response.json({ result: "Missing API Key" });
+      return Response.json({
+        result: JSON.stringify({
+          plan: {
+            layout: "Missing API Key",
+            furniture: "",
+            colors: "",
+            lighting: "",
+            tips: ""
+          },
+          items: []
+        })
+      });
     }
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -17,13 +28,19 @@ export async function POST(req: Request) {
       },
       body: JSON.stringify({
         model: "gpt-4o-mini",
+        temperature: 0.7,
         messages: [
           {
             role: "system",
             content: `
 You are an AI interior designer.
 
-Return ONLY valid JSON:
+You MUST return ONLY valid JSON.
+NO text before or after.
+NO markdown.
+NO explanations.
+
+FORMAT:
 
 {
   "plan": {
@@ -35,14 +52,15 @@ Return ONLY valid JSON:
   },
   "items": [
     { "type": "sofa", "x": 100, "y": 120 },
-    { "type": "table", "x": 220, "y": 200 }
+    { "type": "table", "x": 200, "y": 200 }
   ]
 }
 
-Rules:
+RULES:
 - Always include at least 2 items
-- Coordinates between 0–500
-- No extra text
+- Coordinates must be between 50–500
+- Types: sofa, table, bed, chair
+- Return ONLY JSON
 `
           },
           {
@@ -55,13 +73,52 @@ Rules:
 
     const data = await response.json();
 
-    return Response.json({
-      result: data.choices?.[0]?.message?.content || ""
-    });
+    let content = data.choices?.[0]?.message?.content || "";
+
+    // 🔧 CLEAN RESPONSE (REMOVE MARKDOWN / EXTRA TEXT)
+    content = content
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
+      .trim();
+
+    // 🔧 TRY PARSE
+    try {
+      const parsed = JSON.parse(content);
+
+      return Response.json({
+        result: JSON.stringify(parsed)
+      });
+    } catch (err) {
+      // 🚨 FALLBACK SAFE RESPONSE
+      return Response.json({
+        result: JSON.stringify({
+          plan: {
+            layout: "AI response formatting issue",
+            furniture: "Try again",
+            colors: "Try again",
+            lighting: "Try again",
+            tips: "AI returned invalid format"
+          },
+          items: [
+            { type: "sofa", x: 100, y: 120 },
+            { type: "table", x: 220, y: 200 }
+          ]
+        })
+      });
+    }
 
   } catch (error: any) {
     return Response.json({
-      result: "Server error: " + error.message
+      result: JSON.stringify({
+        plan: {
+          layout: "Server error",
+          furniture: error.message,
+          colors: "",
+          lighting: "",
+          tips: ""
+        },
+        items: []
+      })
     });
   }
 }
