@@ -1,7 +1,20 @@
-export default function RootLayout({ children }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html>
-      <body>{children}</body>
+    <html lang="en">
+      <body
+        style={{
+          margin: 0,
+          padding: 0,
+          fontFamily: "sans-serif",
+          background: "#0f172a",
+        }}
+      >
+        {children}
+      </body>
     </html>
   );
 }
