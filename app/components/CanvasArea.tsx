@@ -13,13 +13,7 @@ export default function CanvasArea({ items, updatePosition }: Props) {
   };
 
   return (
-    <div
-      style={{
-        flex: 1,
-        background: "#e2e8f0",
-        position: "relative"
-      }}
-    >
+    <div style={{ flex: 1, position: "relative", background: "#e2e8f0" }}>
       {items.map((item) => (
         <div
           key={item.id}
@@ -31,8 +25,7 @@ export default function CanvasArea({ items, updatePosition }: Props) {
             width: 100,
             height: 100,
             background: "#3b82f6",
-            borderRadius: 8,
-            cursor: "grab"
+            borderRadius: 8
           }}
         />
       ))}
